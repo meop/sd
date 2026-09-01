@@ -20,7 +20,9 @@ jobs:
           install: mingw-w64-clang-aarch64-clang
       - name: Expose the GNU-family linker
         shell: pwsh
-        run: echo "C:\\msys64\\clangarm64\\bin" >> $env:GITHUB_PATH
+        run: |
+          echo "C:\\msys64\\clangarm64\\bin" >> $env:GITHUB_PATH
+          echo "CARGO_TARGET_AARCH64_PC_WINDOWS_GNULLVM_LINKER=C:\\msys64\\clangarm64\\bin\\clang.exe" >> $env:GITHUB_ENV
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-pc-windows-gnullvm

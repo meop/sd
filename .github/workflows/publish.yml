@@ -66,6 +66,23 @@ jobs:
       with:
         fetch-depth: 1
 
+    - name: Install Windows ARM64 GNU-family linker
+      if: ${{ matrix.target == 'aarch64-pc-windows-gnullvm' }}
+      id: msys2
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: CLANGARM64
+        update: true
+        install: mingw-w64-clang-aarch64-clang
+    - name: Expose Windows ARM64 GNU-family linker
+      if: ${{ matrix.target == 'aarch64-pc-windows-gnullvm' }}
+      shell: pwsh
+      env:
+        MSYS2_LOCATION: ${{ steps.msys2.outputs.msys2-location }}
+      run: |
+        echo "$env:MSYS2_LOCATION\\clangarm64\\bin" >> $env:GITHUB_PATH
+        echo "CARGO_TARGET_AARCH64_PC_WINDOWS_GNULLVM_LINKER=$env:MSYS2_LOCATION\\clangarm64\\bin\\clang.exe" >> $env:GITHUB_ENV
+
     - name: Set the version
       shell: bash
       if: env.SD_VERSION == ''

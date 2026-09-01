@@ -1,0 +1,29 @@
+name: Fork Windows ARM64 GNU smoke
+
+on:
+  push:
+    branches: [windows-arm64-gnullvm-smoke]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-11-arm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-pc-windows-gnullvm
+      - run: cargo build --release --locked --target aarch64-pc-windows-gnullvm
+      - name: Package
+        shell: bash
+        run: |
+          mkdir package
+          cp target/aarch64-pc-windows-gnullvm/release/sd.exe package/
+          7z a sd-aarch64-pc-windows-gnullvm.zip package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sd-aarch64-pc-windows-gnullvm
+          path: sd-aarch64-pc-windows-gnullvm.zip

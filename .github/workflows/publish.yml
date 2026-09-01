@@ -36,6 +36,10 @@ jobs:
             target: aarch64-pc-windows-msvc
             use-cross: false
 
+          - os: windows-11-arm
+            target: aarch64-pc-windows-gnullvm
+            use-cross: false
+
           - os: macos-latest
             target: x86_64-apple-darwin
             use-cross: false
@@ -100,7 +104,7 @@ jobs:
         $CARGO --version
         $CARGO build --release --locked --target ${{ matrix.target }}
         # Handle windows being an oddity
-        if [ "${{ matrix.os }}" = "windows-latest" ]; then
+        if [[ "${{ matrix.target }}" == *-windows-* ]]; then
           echo "BIN_NAME=sd.exe" >> $GITHUB_ENV
         else
           echo "BIN_NAME=sd" >> $GITHUB_ENV
@@ -113,7 +117,7 @@ jobs:
         mkdir -p "$staging"
 
         cp -r {README.md,LICENSE,CHANGELOG.md,gen/*} "$staging"
-        if [ "${{ matrix.os }}" = "windows-latest" ]; then
+        if [[ "${{ matrix.target }}" == *-windows-* ]]; then
           cp "target/${{ matrix.target }}/release/sd.exe" "$staging/"
           7z a "$staging.zip" "$staging"
           echo "ASSET=$staging.zip" >> $GITHUB_ENV

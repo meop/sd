@@ -31,8 +31,12 @@ jobs:
             target: x86_64-pc-windows-msvc
             use-cross: false
 
-          - os: windows-latest
+          - os: windows-11-arm
             target: aarch64-pc-windows-msvc
+            use-cross: false
+
+          - os: windows-11-arm
+            target: aarch64-pc-windows-gnullvm
             use-cross: false
 
           - os: macos-latest
@@ -93,7 +97,7 @@ jobs:
           # For legal reasons, cross doesn't support Apple Silicon. See this:
           # https://github.com/cross-rs/cross-toolchains#darwin-targets
           # It builds and runs fine, but there's no easy way to test it in CI
-        if [ "${{ matrix.use-cross }}" = "true" ] || [ "${{ matrix.target }}" = "aarch64-apple-darwin" ] || [ "${{ matrix.target }}" = "aarch64-pc-windows-msvc" ]; then
+        if [ "${{ matrix.use-cross }}" = "true" ] || [ "${{ matrix.target }}" = "aarch64-apple-darwin" ] || [[ "${{ matrix.target }}" == aarch64-pc-windows-* ]]; then
           $CARGO build --target ${{ matrix.target }}
         else
           $CARGO test --target ${{ matrix.target }}

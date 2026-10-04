@@ -81,6 +81,8 @@ jobs:
       run: |
         echo "$env:MSYS2_LOCATION\\clangarm64\\bin" >> $env:GITHUB_PATH
         echo "CARGO_TARGET_AARCH64_PC_WINDOWS_GNULLVM_LINKER=$env:MSYS2_LOCATION\\clangarm64\\bin\\clang.exe" >> $env:GITHUB_ENV
+        # Link libunwind statically so the release does not need MSYS2's libunwind.dll.
+        echo "CARGO_TARGET_AARCH64_PC_WINDOWS_GNULLVM_RUSTFLAGS=-C target-feature=+crt-static" >> $env:GITHUB_ENV
 
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
